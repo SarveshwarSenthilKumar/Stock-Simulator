@@ -1,0 +1,34 @@
+<DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.8">
+      <meta http-equiv="X-UA-Compatible" content="ie-edge">
+      <link href="style.css" rel="stylesheet" type="text/css" />
+      
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+      <title>Sarveshwar Stock Simulator</title>
+    </head>
+    <body style="background-color: #18191a;">
+        <div style="width: 100%; height: 55%;"><img style="width: 30%; height: 100%; margin-left: 10%; float:left;" src="https://i.ibb.co/0GKc5Qg/stockicon.png"><b style="width: 40%; height: 100%; margin-right: 9%; float:right; font-size: 2.5vw; color: white;">
+            <div style="color: white; font-size: 4vw; text-align: center; margin-bottom: 4%; margin-top: 7%;">Welcome to <br><b style="color: #316cb8;">Sarveshwar's Stock Simulator</b> </div></b></div>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+            {% for sentence in sentences %}
+            <div style="color: white; font-size: 2.5vw; margin-left: 10%; margin-right: 10%; font-weight: 500;">{{sentence}}</div>
+            {% endfor %}
+            {% if signup == "true" %}
+            <form action="/signup" method="GET">  
+              <div>
+                <button type="submit" class="btn btn-primary" style="width: 92%; margin-top: 5%; height: 100px; margin-left: 4%; font-size: 6vw; float: left; margin-bottom: 1%; " ><div style="font-size: 2vw; ">Return to Sign Up Page</div></button>
+              </div>
+            </form>
+            {% else %}
+            <form action="/" method="GET">  
+              <div>
+                <button type="submit" class="btn btn-primary" style="width: 92%; margin-top: 5%; height: 100px; margin-left: 4%; font-size: 6vw; float: left; margin-bottom: 1%; " ><div style="font-size: 2vw; ">Return to Home Page</div></button>
+              </div>
+            </form>
+            {% endif %}
+           
+    </body>
+    </html>
