@@ -61,7 +61,7 @@ def checkUserPassword(username, password):
          return False, "Your username may not contain any symbols or special characters!"
    
    if len(username)<8:
-      return False, "Your password needs to be at least 8 characters!"
+      return False, "Your username needs to be at least 8 characters!"
    
    hasUpper=False
    hasLower=False
