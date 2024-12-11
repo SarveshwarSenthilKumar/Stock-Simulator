@@ -20,8 +20,6 @@ Session(app)
 
 allowedChar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-'!#$%&()*+,./:;<=>?@[\]^_`{|}~ "
 
-#stockname, stockprice, noStocks, transactionType, buyerID
-
 def checkEmail(email):
    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
    if(re.fullmatch(regex, email)):
@@ -95,44 +93,106 @@ def hash(password):
 
 @app.route("/")
 def index():
+   return render_template("homePage.html")
+
+@app.route("/myaccount")
+def myacc():
    if not session.get("name"):
-      return render_template("homePage.html")
+      return redirect("/")
+   db = SQL("sqlite:///users.db")
+   user=db.execute("SELECT * FROM users WHERE name = :name", name=session.get("name"))[0]
+   return render_template("digivisit.html", users=[user])
+
+"""
+@app.route("/viewall")
+def viewall():
+   if not session.get("name"):
+      return redirect("/")
+   db = SQL("sqlite:///prisoners.db")
+   allPrisoners=db.execute("SELECT * FROM prisoners")
+   
+   return render_template("digivisit.html", results=allPrisoners)
+"""
+
+@app.route("/search")
+def search():
+   if not session.get("name"):
+      return redirect("/")
+   query=request.args.get("query")
+
+   allRes=[]
+
+   db = SQL("sqlite:///prisoners.db")
+   results=db.execute("SELECT * FROM prisoners")
+
+   if query.lower().strip() == "all":
+      return render_template("digivisit.html", results=results)
+
+   for result in results:
+      if query.isnumeric():
+         if int(query) == result["id"]:
+            allRes.append(result)
+      elif query.lower() in result["name"].lower():
+         allRes.append(result)
+      elif query.lower() in result["prisonSentence"].lower():
+         allRes.append(result)
+      elif query.lower() in result["description"].lower():
+         allRes.append(result)
+      elif query.lower() in result["origin"].lower():
+         allRes.append(result)
+      elif query.lower() in result["age"].lower():
+         allRes.append(result)
+      elif query.lower() in result["gender"].lower():
+         allRes.append(result)
+      elif query.lower() in result["languages"].lower():
+         allRes.append(result)
+      elif query.lower() in result["attorney"].lower():
+         allRes.append(result)
+
+   return render_template("digivisit.html", results=allRes)
+   
+@app.route("/gettickets")
+def tickets():
+   if not session.get("name"):
+      return redirect("/signup")
+   return render_template("tickets.html")
+
+@app.route("/digivisit")
+def digivisit():
+   if not session.get("name"):
+      return redirect("/")
+   if request.method == "GET":
+      return render_template("digivisit.html")
+
+@app.route("/createprisoner", methods=["GET", "POST"])
+def createprisoner():
+   print(session.get("name"))
+   if session.get("name") != "sarveshwar" and session.get("name") != "elijahrw":
+      return redirect("/")
    else:
-      db = SQL("sqlite:///users.db")
-      results = db.execute("SELECT * FROM users WHERE username = :username", username=session.get("name"))
-      user = results[0]
+      if request.method == "GET":
+         return render_template("createprisoner.html")
+      else:
+         name=request.form.get("name")
+         prisonsentence=request.form.get("prison")
+         description=request.form.get("description")
+         origin=request.form.get("origin")
+         age=request.form.get("age")
+         gender=request.form.get("gender")
+         languages=request.form.get("languages")
+         attorney=request.form.get("attorney")
 
-      balance = (user["money"])
-      value=balance
+         db = SQL("sqlite:///prisoners.db")
+         db.execute("INSERT INTO prisoners (name, prisonsentence, description, origin, age, gender, languages, attorney) VALUES (?,?,?,?,?,?,?,?)", name, prisonsentence, description, origin, age, gender, languages, attorney)
 
-      db = SQL("sqlite:///transactions.db")
-      transactions = db.execute("SELECT * FROM transactions WHERE buyerName = :buyerName AND stillHeld = :stillHeld", buyerName=session.get("name"), stillHeld=True)
+         return render_template("sentence.html", sentences=["You have successfully created a prisoner!"])
 
-      stocksOwned = {}
 
-      for transaction in transactions:
-         if transaction["stock"] not in stocksOwned:
-            stocksOwned[transaction["stock"]] = 0
-         if transaction["transactionType"] == "BUY":
-            stocksOwned[transaction["stock"]] += transaction["amntStocks"]
-         else:
-            stocksOwned[transaction["stock"]] -= transaction["amntStocks"]
 
-      for stock in stocksOwned.keys():
-         amntShares=stocksOwned[stock]
-         stock=yfinance.Ticker(stock)
-         amountHeldInStock=stock.info["currentPrice"]*amntShares
-         value+=amountHeldInStock
-
-      comparator = int(user["setpoint"])
-      valueDifference=0
-      
-      if (value-comparator) != 0:
-         valueDifference=(value-comparator)/comparator*100
-      value="${:,.2f}".format(value)
-      balance="${:,.2f}".format(balance)
-      return render_template("index.html", balance=balance, valueDifference=valueDifference, value=value, stocksOwned=stocksOwned)
-
+#Username: sarveshwar Password: Snakisle@2008
+   
+   
+   
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
    if session.get("name"):
@@ -163,17 +223,15 @@ def signup():
    tz_NY = pytz.timezone('America/New_York') 
    now = datetime.now(tz_NY)
    dateJoined = now.strftime("%d/%m/%Y %H:%M:%S")
-   
-   startingMoney = 25000
 
    password = hash(password)
    
    db = SQL("sqlite:///users.db")
-   db.execute("INSERT INTO users (username, password, emailaddress, name, money, dateJoined, setpoint) VALUES (?,?,?,?,?,?,?)", username, password, emailAddress, fullName, startingMoney, dateJoined, startingMoney)
+   db.execute("INSERT INTO users (username, password, emailaddress, name, dateJoined) VALUES (?,?,?,?,?)", username, password, emailAddress, fullName, dateJoined)
 
    session["name"] = username
    
-   return render_template("sentence.html", sentences=["You have successfully signed up for Sarveshwar Stock Simulator! Return to home page to start trading!"])
+   return render_template("sentence.html", sentences=["You have successfully signed up for Snakisle Penitentiary! Return to home page to start viewing!"])
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -204,214 +262,3 @@ def logout():
    session["name"] = None
    return redirect("/login")
 
-@app.route("/search")
-def searchStock():
-   if not session.get("name"):
-      return redirect("/")
-   
-   query=request.args.get("query").strip().upper()
-   stock=yfinance.Ticker(query)
-
-   username=session.get("name")
-
-   db = SQL("sqlite:///users.db")
-   users=db.execute("SELECT * FROM users WHERE username = :username", username=username)
-   user=users[0]
-
-   balance=user["money"]
-
-   stockInformation=stock.info
-   try:
-      previousClose=stockInformation["regularMarketPreviousClose"]
-      currentPrice=stockInformation["currentPrice"]
-   except:
-      return render_template("sentence.html", sentences=["There is no information about this ticker! Please enter a valid ticker!"])
-
-   db = SQL("sqlite:///transactions.db")
-   transactions=db.execute("SELECT * FROM transactions WHERE buyerName = :username AND stillHeld = :stillHeld AND stock = :stock", username=username, stillHeld=True, stock=stockInformation["underlyingSymbol"])
-
-   stockInformation["owned"] = 0
-      
-   for transaction in transactions:
-      if transaction["transactionType"] == "BUY":
-         stockInformation["owned"]+=transaction["amntStocks"]
-      else:
-         stockInformation["owned"]-=transaction["amntStocks"]
-
-   priceChange=((currentPrice/previousClose))*100-100
-   stockInformation["priceChange"]=priceChange
-
-   stockInformation["max"]=int(balance/currentPrice)
-
-   return render_template("displayStock.html", stockInfo=stockInformation)
-
-@app.route("/sellstock")
-def sellStock():
-   if not session.get("name"):
-      return redirect("/")
-   
-   username=session.get("name")
-
-   symbol=request.args.get("symbol")
-   numberOfShares=int(request.args.get("numberOfShares"))
-
-   if numberOfShares<=0:
-      return render_template("sentence.html", sentences=["You may not sell less than at least one share!"])
-
-   db = SQL("sqlite:///users.db")
-   users=db.execute("SELECT * FROM users WHERE username = :username", username=username)
-   user=users[0]
-
-   balance=user["money"]
-
-   stock=yfinance.Ticker(symbol)
-   currentPrice=stock.info["currentPrice"]
-
-   amntOwned=0
-
-   db = SQL("sqlite:///transactions.db")
-   transactions=db.execute("SELECT * FROM transactions WHERE buyerName = :username AND stillHeld = :stillHeld AND stock = :stock", username=username, stillHeld=True, stock=symbol)
-
-   for transaction in transactions:
-      if transaction["transactionType"] == "BUY":
-         amntOwned+=transaction["amntStocks"]
-      else:
-         amntOwned-=transaction["amntStocks"]
-   
-   if numberOfShares > amntOwned:
-      return render_template("sentence.html", sentences=["You cannot sell more than you curruntly have! You may only sell up to " + str(amntOwned) + " shares of " + symbol])
-   elif numberOfShares == amntOwned:
-      db = SQL("sqlite:///transactions.db")
-      db.execute("UPDATE transactions SET stillHeld = :stillHeld WHERE stock = :stock AND buyerName = :username", stillHeld=False, stock=symbol, username=username)
-
-      tz_NY = pytz.timezone('America/New_York') 
-      now = datetime.now(tz_NY)
-      transactionTime = now.strftime("%d/%m/%Y %H:%M:%S")
-
-      balance+=currentPrice*numberOfShares
-
-      db = SQL("sqlite:///transactions.db")
-      db.execute("INSERT INTO transactions (stock, amntStocks, stockPrice, transactionType, buyerName, transactionTime, stillHeld) VALUES (?,?,?,?,?,?,?)", symbol, numberOfShares, currentPrice, "SELL", username, transactionTime, False)
-
-      db = SQL("sqlite:///users.db")
-      db.execute("UPDATE users SET money = :money WHERE username = :username", money=balance, username=username)
-
-      return render_template("sentence.html", sentences=["You have successfully sold all(" + str(numberOfShares) + ") your shares of " + symbol + " at the price of $" + str(currentPrice) + " for a total transaction of " + "${:,.2f}".format(currentPrice*numberOfShares) + "$"])
-   else:
-      tz_NY = pytz.timezone('America/New_York') 
-      now = datetime.now(tz_NY)
-      transactionTime = now.strftime("%d/%m/%Y %H:%M:%S")
-
-      balance+=currentPrice*numberOfShares
-
-      db = SQL("sqlite:///transactions.db")
-      db.execute("INSERT INTO transactions (stock, amntStocks, stockPrice, transactionType, buyerName, transactionTime, stillHeld) VALUES (?,?,?,?,?,?,?)", symbol, numberOfShares, currentPrice, "SELL", username, transactionTime, True)
-
-      db = SQL("sqlite:///users.db")
-      db.execute("UPDATE users SET money = :money WHERE username = :username", money=balance, username=username)
-
-      return render_template("sentence.html", sentences=["You have successfully sold " + str(numberOfShares) + " shares of " + symbol + " at the price of $" + str(currentPrice) + " for a total transaction of " + "${:,.2f}".format(currentPrice*numberOfShares) + "$"])
-
-
-@app.route("/purchasestock")
-def purchaseStock():
-   if not session.get("name"):
-      return redirect("/")
-   
-   username=session.get("name")
-
-   symbol=request.args.get("symbol")
-   numberOfShares=int(request.args.get("numberOfShares"))
-
-   if numberOfShares<=0:
-      return render_template("sentence.html", sentences=["You may not purchase less than at least one share!"])
-
-
-   db = SQL("sqlite:///users.db")
-   users=db.execute("SELECT * FROM users WHERE username = :username", username=username)
-   user=users[0]
-
-   balance=user["money"]
-
-   stock=yfinance.Ticker(symbol)
-   currentPrice=stock.info["currentPrice"]
-
-   availableShares=int(balance/currentPrice)
-   if numberOfShares>availableShares:
-      return render_template("sentence.html", sentences=["You have insufficient funds for this purchase! You may only purchase up to " + str(availableShares) + " shares of " + symbol])
-   
-   balance-=currentPrice*numberOfShares
-
-   tz_NY = pytz.timezone('America/New_York') 
-   now = datetime.now(tz_NY)
-   transactionTime = now.strftime("%d/%m/%Y %H:%M:%S")
-
-   db = SQL("sqlite:///transactions.db")
-   db.execute("INSERT INTO transactions (stock, amntStocks, stockPrice, transactionType, buyerName, transactionTime, stillHeld) VALUES (?,?,?,?,?,?,?)", symbol, numberOfShares, currentPrice, "BUY", username, transactionTime, True)
-
-   db = SQL("sqlite:///users.db")
-   db.execute("UPDATE users SET money = :money WHERE username = :username", money=balance, username=username)
-
-   amountSpent=currentPrice*numberOfShares
-
-   return render_template("sentence.html", sentences=["You have successfully bought " + str(numberOfShares) + " shares of " + symbol + " at the price of $" + str(currentPrice) + " for a total buyout of " + "${:,.2f}".format(amountSpent) + "$"])
-
-@app.route("/setpoint")
-def setpoint():
-   referencePoint=request.args.get("referencePoint")
-   if not session.get("name"):
-      return redirect("/")
-   username=session.get("name")
-
-   if not referencePoint:
-      db = SQL("sqlite:///users.db")
-      user=db.execute("SELECT * FROM users WHERE username = :username", username=username)[0]
-
-      currentBalance = user["money"]
-
-      db = SQL("sqlite:///transactions.db")
-      transactions = db.execute("SELECT * FROM transactions WHERE buyerName = :buyerName AND stillHeld = :stillHeld", buyerName=session.get("name"), stillHeld=True)
-
-      stocksOwned = {}
-
-      for transaction in transactions:
-         if transaction["stock"] not in stocksOwned:
-            stocksOwned[transaction["stock"]] = 0
-         if transaction["transactionType"] == "BUY":
-            stocksOwned[transaction["stock"]] += transaction["amntStocks"]
-         else:
-            stocksOwned[transaction["stock"]] -= transaction["amntStocks"]
-
-      for stock in stocksOwned.keys():
-         amntShares=stocksOwned[stock]
-         stock=yfinance.Ticker(stock)
-         amountHeldInStock=stock.info["currentPrice"]*amntShares
-         currentBalance+=amountHeldInStock
-      
-
-      newReferencePoint = currentBalance
-
-      db = SQL("sqlite:///users.db")
-      db.execute("UPDATE users SET setpoint = :setpoint WHERE username = :username", setpoint=newReferencePoint, username=username)
-
-   else:
-      newReferencePoint=int(referencePoint)
-      db = SQL("sqlite:///users.db")
-      db.execute("UPDATE users SET setpoint = :setpoint WHERE username = :username", setpoint=newReferencePoint, username=username)
-
-   return render_template("sentence.html", sentences=["You have successfuly reset your reference point to " + "${:,.2f}".format(newReferencePoint)])
-
-@app.route("/viewtransactions")
-def viewTransactions():
-   if not session.get("name"):
-      return redirect("/")
-   username=session.get("name")
-   db = SQL("sqlite:///transactions.db")
-   transactions=db.execute("SELECT * FROM transactions where buyerName = :username", username=username)
-
-   transactions=transactions[::-1]
-
-   if len(transactions) == 0:
-      return render_template("sentence.html", sentences=["You have not made any transactions yet!"])
-   
-   return render_template("viewTransactions.html", transactions=transactions)

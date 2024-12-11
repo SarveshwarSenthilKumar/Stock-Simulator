@@ -1,42 +1,147 @@
-<DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.8">
-      <meta http-equiv="X-UA-Compatible" content="ie-edge">
-      <link href="style.css" rel="stylesheet" type="text/css" />
-      <link rel="icon" href="https://i.ibb.co/0GKc5Qg/stockicon.png">
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-      <title>Sarveshwar Stock Simulator</title>
-    </head>
-    <body style="background-color: #18191a;">
-        <div style="width: 100%; height: 55%;"><img style="width: 30%; height: 100%; margin-left: 10%; float:left;" src="https://i.ibb.co/0GKc5Qg/stockicon.png"><b style="width: 40%; height: 100%; margin-right: 9%; float:right; font-size: 2.5vw; color: white;">
-            <div style="color: white; font-size: 4vw; text-align: center; margin-bottom: 4%; margin-top: 7%;">Welcome to <br><b style="color: #316cb8;">Sarveshwar's Stock Simulator</b> </div></b></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie-edge">
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link rel="icon" href="https://i.ibb.co/cyJcQtZ/snakislepen.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+  <title>Snakisle Penitentiary</title>
+  <style>
+    #top, #bottom, #left, #right {
+      background: #112a12;
+      position: fixed;
+    }
+    #left, #right {
+      top: 0; bottom: 0;
+      width: 15px;
+    }
+    #left { left: 0; }
+    #right { right: 0; }
+    #top, #bottom {
+      left: 0; right: 0;
+      height: 15px;
+    }
+    #top { top: 0; }
+    #bottom { bottom: 0; }
 
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-            <div style="width: 45%; float:right; margin-right: 5%;">
-            <div style="color: white; font-size: 2.5vw; text-align: center; margin-bottom: 4%;"><b>"An investment in knowledge pays the best interest" - Benjamin Franklin</b> </div>
-           <div style="margin-top: 10%;">
-            <form  action="/signup" method="GET">  
-              <div class="form-group">
+    .topnav {
+      background-color: #06402b;
+      overflow: hidden;
+      margin-top: 1.2%;
+      width: 100%;
+    }
 
-                <button style="width: 30%; float: left; font-size: 2vw; height: 11%;" type="submit" class="btn btn-success form-control">Sign Up</button>
+    .topnav a {
+      float: right;
+      color: #06402b;
+      text-align: center;
+      padding: 20px;
+      padding-bottom: 20px;
+      text-decoration: none;
+      font-size: 19px;
+    }
 
-              </div>
-            </form>
-            <form  action="/login" method="GET" >  
-              <div class="form-group">
+    .topnav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
 
-                <button style="width: 30%; float: right; font-size: 2vw; height: 11%;" type="submit" class="btn btn-primary form-control">Log In</button>
+    .topnav a.active {
+      background-color: #00b4a3;
+      color: white;
+    }
 
-              </div>
-            </form>
-          </div>
+    .get-tickets-btn {
+      width: 10%;
+      margin-top: 2%;
+      height: 100%;
+      font-size: 1.5vw;
+      float: right;
+      margin-bottom: 1%;
+    }
+
+    .background-image {
+      background-image: url('https://live.staticflickr.com/8131/8698064128_134575ac45_h.jpg');
+      height: 540px;
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
+<body style="background-color: #18191a;">
+  <div style="main">
+    <div id="left"></div>
+    <div id="right"></div>
+    <div id="top"></div>
+    <div id="bottom"></div>
+
+    <div class="topnav">
+      <div style="font-size: 3vw; margin-left: 4%; font-family: Verdana, Courier New, monospace; font-weight: bold; color: #96d9c0; float: left; margin-top: 2%;">Snakisle Penitentiary</div>
+ 
+      <form  action="/gettickets" method="GET" style="width: 100%; height: 8%;">  
+        <div class="form-group" style="width: 100%;">
+
+          <button type="submit" class="btn btn-danger form-control" style="width: 10%; margin-top: 2%; height: 100%;  font-size: 1.5vw; float: right; margin-bottom: 1%; margin-right: 4%; ">Get Tickets</button>
+
         </div>
-        <div style="width: 35%; margin-top: 1%;; margin-left: 5%; float: left; color: #7e8396; font-size: 1.8vw; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-weight: 800;">Are you looking to try out new investment strategies? Or are you a beginner looking to dip your toes into the vast world that is the stock market? <br>
-            <b style="font-size: 3vw;"><blue style="color: #66a2eb;">Sign up</blue> and <green style="color: #04b73c;">trade today!</green></b></div>
-        <br>
-        <br>
-        <br>
-    </body>
-    </html>
+      </form>
+    </div>
+
+    <div class="background-image">
+      Sarveshwar and Elijah
+      <div style="width: 100%; text-shadow: 1px 1px #FF0000; text-align: center; font-size: 4vw; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-top: 10%; margin-bottom: 5%; font-weight: bold;">
+        CANADA'S UNDERWORLD<br>
+        <div>WHERE EVERY CELL TELLS A TALE</div>
+      </div>
+    </div>
+
+    <div style="height: 100%; font-size: 1.5vw; margin-left: 4%; margin-right: 4%; margin-top: 4%; margin-bottom: 5%; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+      <div style="width: 100%;">
+        <tex1 style="width: 46%;  float: left;"><head1 style="font-size: 2vw; margin-left: 1%;">Welcome to the <nam style="color:#00b4a3; font-size: 2.5vw;;">Snakeisle Penitentiary</nam>,</head1>
+      the "Alcatraz of the North", located on Snake Island off the coast of Toronto, Ontario, Canada. A maximum-security facility housing some of the nation’s most notorious criminals, Snakisle draws over 2 million visitors annually, captivated by its chilling reputation and rich history. Known for its tough conditions, the penitentiary is also a place of redemption, offering inmates a chance to reform through education, therapy, and vocational training. While some criminals remain locked in their past, others find a path to resurrection, transforming their lives and proving that even the darkest stories can find light.
+        </tex1>
+        <im1 style="width: 46%; float: right;">
+          <img src="https://i.ibb.co/YbqzNYS/snakislepenferry.jpg" alt="">
+        </im1>
+      </div>
+      <div style="color: black">
+        snakislepenitentiary-sarveshwar&elijah
+      </div>
+    </div>
+    <div style="margin-left: 4%; height: 100%; margin-right: 4%; color: #ebecf0; font-size: 1vw; width: 92%; margin-bottom: 2%;">
+      <div style="color: #70A6E0; font-size: 3vw; font-weight: bold;">
+        Explore the Journey Behind the Bars
+      </div>
+      <br> 
+      <div style="width: 50%; float: left; ">
+        <img src="https://i.ibb.co/dJXC9pK/digitalprison.png" style="width: 95%; margin-right: 5%;">
+      </div>
+      <div style="width: 50%; float: right; margin-bottom: 3%;">
+        Step into the shadows of one of the most notorious maximum-security prisons in the world on this spine-tingling adventure, Journey Behind the Bars. This unique and immersive experience takes you beyond the razor-wire fences, through the cold, echoing cell blocks, and into the very heart of life behind the bars.
+        Guided by seasoned prison staff and former inmates, you’ll explore restricted zones, including the chilling isolation wings, historic death row chambers, and labyrinthine corridors where countless stories of crime, punishment, and redemption unfold. Hear the raw, unfiltered tales of escape attempts, prison riots, and moments of sheer survival that still haunt these walls.
+        As you tread the gritty, worn floors, you’ll feel the tension and hear the whispers of those who spent their lives here—both guards and prisoners. Experience what it’s like to be locked inside a cell for a brief moment, standing where hardened criminals once lived their days in confinement. The air is heavy, the atmosphere intense, and the stories unforgettable.
+        Journey Behind the Bars isn’t just a tour—it’s a thrilling look at life on the inside, where courage, despair, and hope collide. Are you brave enough to unlock the truth hidden within these walls?
+      </div>
+      <br>
+      <div style="width: 100%; color: red; font-size: 2vw; font-weight: bold; ">
+        Disclaimer: This adventure is designed for those with a taste for history, mystery, and an unflinching curiosity. Not for the faint of heart! Journey Behind the Bars is an experience only for those who are 18 or older.
+      </div>
+    </div>
+    <br>
+    <hr>
+    <div style="width: 92%; margin-left: 4%; margin-right: 4%; font-weight: bold; margin-bottom: 5%; color: white; font-size: 2vw;">
+      Land Acknowledgment: The land that the Snakisle Penitentiary stands on was reclaimed from Lake Ontario, the shores and waters of which were a meeting place for many Nations, including the Mississaugas of the Credit, the Anishinaabe, the Chippewa, the Haudenosaunee, and the Wendat peoples. And now, this land is home to many diverse First Nations, Inuit and Métis peoples. 
+      Toronto is covered by Treaty 13 signed with the Mississaugas of the Credit First Nation.
+    </div>
+    <div style="width: 100%; background-color: #06402b; height: 200px; color:#00b4a3; font-size: 3vw; font-weight: bold;">
+      <div style="width: 50%; float: left;">
+        <img src="https://i.ibb.co/cyJcQtZ/snakislepen.png" alt="" style="height: 200px;">
+        Snakisle Penitentiary
+      </div>
+
+    </div>
+    
+</body>
+</html>
