@@ -1,0 +1,55 @@
+<DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.8">
+      <meta http-equiv="X-UA-Compatible" content="ie-edge">
+      <link href="style.css" rel="stylesheet" type="text/css" />
+      <link rel="icon" href="https://i.ibb.co/0GKc5Qg/stockicon.png">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+      <title>Sarveshwar Stock Simulator</title>
+    </head>
+    <body style="background-color: #18191a;">
+      
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+            <form  action="/" method="GET" style="width: 100%; height: 8%;">  
+                <div class="form-group" style="width: 100%;">
+        
+                  <button type="submit" class="btn btn-primary form-control" style="width: 5%; margin-top: 2%; height: 100%; margin-right: 4%; font-size: 2vw; float: right; margin-bottom: 1%; ">🏠︎</button>
+        
+                </div>
+              </form>
+            <form  action="/search" method="GET">  
+              <div class="form-group" style="width: 90%; margin-left: 5%; margin-top: 4%;">
+                <input required placeholder="🔎 Stock Search" type="text"  name="query" id="query" class="form-control" style="height:10%; font-size: 2vw; width: 100%l">
+                </div>
+            </form>
+            <div style="width: 86%; float: left; margin-left: 7%; margin-right: 7%; font-size: 3vw; color: #676767; margin-top: 3%; margin-bottom: 5%;">
+            <b style="color:white;">Viewing Transaction History for {{transactions[0].buyerName}}:</b>
+            {% for transaction in transactions %} 
+            <div style="margin-top: 2%;">
+            {% if transaction.transactionType == "BUY" %}
+            <h1 style="font-size: 2vw; ">Bought <green style="color:#04b73c;">{{transaction.amntStocks}}</green> shares of <blue style="color: #316cb8;">{{transaction.stock}}</blue> at <green style="color:#04b73c;">{{"${:,.2f}".format(transaction.stockPrice)}}</green> for a total buyout of <green style="color:#04b73c;">{{ "${:,.2f}".format(transaction.stockPrice*transaction.amntStocks) }}</green></h1>
+            {% else %}
+            <h1 style="font-size: 2vw; ">Sold <red style="color:#DC143C;">{{transaction.amntStocks}}</red> shares of <blue style="color: #316cb8;">{{transaction.stock}}</blue> at <red style="color:#DC143C;">{{"${:,.2f}".format(transaction.stockPrice)}}</red> for a total payout of  <red style="color:#DC143C;">{{ "${:,.2f}".format(transaction.stockPrice*transaction.amntStocks) }}</red></h1>
+            {% endif %}
+            <date style="font-size: 1vw; ">({{transaction.transactionTime}}) (New York-USA Time)</date>
+            </div>
+            {% endfor %}
+            <form  action="/setpoint" method="GET" style="margin-top: 10%;">  
+                <div class="form-group" style="">
+                  <input required placeholder="Set a custom reference point (Ex: 25500)" type="number"  name="referencePoint" id="referencePoint" class="form-control" style="height:10%; font-size: 2vw; width: 100%; ">
+                  <button type="submit" class="btn btn-primary form-control" style="width: 100%; height: 10%;  font-size: 2vw; float: left; ">Set Reference</button>
+                  </div>
+          </form>
+    
+            <br>
+            <br>
+          </div>
+        </div>
+        <br>
+        <br>
+    
+        <br>
+    </body>
+    </html>
