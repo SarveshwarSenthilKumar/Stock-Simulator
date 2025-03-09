@@ -121,7 +121,7 @@ def index():
       for stock in stocksOwned.keys():
          amntShares=stocksOwned[stock]
          stock=yfinance.Ticker(stock)
-         amountHeldInStock=stock.info["currentPrice"]*amntShares
+         amountHeldInStock=stock.get_info()["currentPrice"]*amntShares
          value+=amountHeldInStock
 
       comparator = int(user["setpoint"])
@@ -220,7 +220,7 @@ def searchStock():
 
    balance=user["money"]
 
-   stockInformation=stock.info
+   stockInformation=stock.get_info()
    try:
       previousClose=stockInformation["regularMarketPreviousClose"]
       currentPrice=stockInformation["currentPrice"]
@@ -228,7 +228,7 @@ def searchStock():
       return render_template("sentence.html", sentences=["There is no information about this ticker! Please enter a valid ticker!"])
 
    db = SQL("sqlite:///transactions.db")
-   transactions=db.execute("SELECT * FROM transactions WHERE buyerName = :username AND stillHeld = :stillHeld AND stock = :stock", username=username, stillHeld=True, stock=stockInformation["underlyingSymbol"])
+   transactions=db.execute("SELECT * FROM transactions WHERE buyerName = :username AND stillHeld = :stillHeld AND stock = :stock", username=username, stillHeld=True, stock=stockInformation["symbol"])
 
    stockInformation["owned"] = 0
       
@@ -265,7 +265,7 @@ def sellStock():
    balance=user["money"]
 
    stock=yfinance.Ticker(symbol)
-   currentPrice=stock.info["currentPrice"]
+   currentPrice=stock.get_info()["currentPrice"]
 
    amntOwned=0
 
@@ -334,7 +334,7 @@ def purchaseStock():
    balance=user["money"]
 
    stock=yfinance.Ticker(symbol)
-   currentPrice=stock.info["currentPrice"]
+   currentPrice=stock.get_info()["currentPrice"]
 
    availableShares=int(balance/currentPrice)
    if numberOfShares>availableShares:
@@ -385,7 +385,7 @@ def setpoint():
       for stock in stocksOwned.keys():
          amntShares=stocksOwned[stock]
          stock=yfinance.Ticker(stock)
-         amountHeldInStock=stock.info["currentPrice"]*amntShares
+         amountHeldInStock=stock.get_info()["currentPrice"]*amntShares
          currentBalance+=amountHeldInStock
       
 

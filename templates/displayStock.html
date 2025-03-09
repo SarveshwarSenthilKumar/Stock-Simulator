@@ -27,7 +27,7 @@
             <div style="width: 86%; float: left; margin-left: 7%; margin-right: 7%; font-size: 3vw; color: white; margin-top: 3%;">
             
                 <h1 style="font-weight: 500; font-size: 2.5vw;"><a href={{stockInfo.website}} target=”_blank” style="color: white; text-decoration: none;">{{ stockInfo.shortName }}</a> <sector style="color: #676767; font-size: 2vw;">({{ stockInfo.sector }})</sector> </h1>
-                <h1 style="font-weight: 650;">{{ stockInfo.underlyingSymbol }} 
+                <h1 style="font-weight: 650;">{{ stockInfo.symbol }} 
                 {% if stockInfo.priceChange >= 0 %}
                 <priceChange style="color: #04b73c; font-size: 2.3vw;">
                 {% else %}
@@ -59,7 +59,7 @@
         <form  action="/purchasestock" method="GET" style="margin-top: 3%;">  
               <div class="form-group" style="width: 90%; margin-left: 5%;">
                 <input required placeholder="Purchase Shares (Max: {{stockInfo.max}})" max={{stockInfo.max}} type="number"  name="numberOfShares" id="numberOfShares" class="form-control" style="height:10%; font-size: 2vw; width: 100%; ">
-                <button type="submit" name="symbol" id="symbol"value={{stockInfo.underlyingSymbol}} class="btn btn-primary form-control" style="width: 100%; height: 10%;  font-size: 2vw; float: left; margin-bottom: 2%;">Purchase Shares</button>
+                <button type="submit" name="symbol" id="symbol"value={{stockInfo.symbol}} class="btn btn-primary form-control" style="width: 100%; height: 10%;  font-size: 2vw; float: left; margin-bottom: 2%;">Purchase Shares</button>
                 </div>
         </form>
         {% endif %}
@@ -67,7 +67,7 @@
         <form  action="/sellstock" method="GET" style="margin-top: 3%;">  
             <div class="form-group" style="width: 90%; margin-left: 5%;">
               <input required placeholder="Sell Shares (Max: {{stockInfo.owned}})" max={{stockInfo.owned}} type="number"  name="numberOfShares" id="numberOfShares" class="form-control" style="height:10%; font-size: 2vw; width: 100%; ">
-              <button type="submit" name="symbol" id="symbol"value={{stockInfo.underlyingSymbol}} class="btn btn-danger form-control" style="width: 100%; height: 10%;  font-size: 2vw; float: left; margin-bottom: 5%;">Sell Shares</button>
+              <button type="submit" name="symbol" id="symbol"value={{stockInfo.symbol}} class="btn btn-danger form-control" style="width: 100%; height: 10%;  font-size: 2vw; float: left; margin-bottom: 5%;">Sell Shares</button>
               </div>
       </form>
       {% endif %}
