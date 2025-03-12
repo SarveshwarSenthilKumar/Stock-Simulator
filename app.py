@@ -1,6 +1,6 @@
 from tokenize import Pointfloat, group
 from unittest import result
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, jsonify
 from flask_session import Session
 from datetime import time
 from datetime import date
@@ -11,6 +11,15 @@ import re
 from sql import *
 import pytz
 import yfinance
+import openai
+from dotenv import load_dotenv
+import os
+import google.generativeai as genai
+
+load_dotenv()
+# Google Gemini API Key (Replace with your actual API key)
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=GEMINI_API_KEY)
 
 app = Flask(__name__)
 
@@ -19,8 +28,6 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 allowedChar = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-'!#$%&()*+,./:;<=>?@[\]^_`{|}~ "
-
-#stockname, stockprice, noStocks, transactionType, buyerID
 
 def checkEmail(email):
    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
@@ -133,6 +140,57 @@ def index():
       balance="${:,.2f}".format(balance)
       return render_template("index.html", balance=balance, valueDifference=valueDifference, value=value, stocksOwned=stocksOwned)
 
+def chat_with_gemini(prompt):
+    model = genai.GenerativeModel("gemini-2.0-flash-lite")
+    response = model.generate_content(prompt)
+    return response.text.strip()
+
+@app.route("/chat", methods=["GET", "POST"])
+def chat():
+   if not session.get("name"):
+      return render_template("homePage.html")
+   response = ""
+   if request.method == "POST":
+      user_input = request.form.get("message", "").strip().lower()
+
+      response = chat_with_gemini(user_input)
+   
+      db = SQL("sqlite:///users.db")
+      results = db.execute("SELECT * FROM users WHERE username = :username", username=session.get("name"))
+      user = results[0]
+
+      balance = (user["money"])
+      value=balance
+
+      db = SQL("sqlite:///transactions.db")
+      transactions = db.execute("SELECT * FROM transactions WHERE buyerName = :buyerName AND stillHeld = :stillHeld", buyerName=session.get("name"), stillHeld=True)
+
+      stocksOwned = {}
+
+      for transaction in transactions:
+         if transaction["stock"] not in stocksOwned:
+            stocksOwned[transaction["stock"]] = 0
+         if transaction["transactionType"] == "BUY":
+            stocksOwned[transaction["stock"]] += transaction["amntStocks"]
+         else:
+            stocksOwned[transaction["stock"]] -= transaction["amntStocks"]
+
+      for stock in stocksOwned.keys():
+         amntShares=stocksOwned[stock]
+         stock=yfinance.Ticker(stock)
+         amountHeldInStock=stock.get_info()["currentPrice"]*amntShares
+         value+=amountHeldInStock
+
+      comparator = int(user["setpoint"])
+      valueDifference=0
+      
+      if (value-comparator) != 0:
+         valueDifference=(value-comparator)/comparator*100
+      value="${:,.2f}".format(value)
+      balance="${:,.2f}".format(balance)
+   
+   return render_template("index.html", balance=balance, valueDifference=valueDifference, value=value, stocksOwned=stocksOwned, sentences=[response])
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
    if session.get("name"):
@@ -210,6 +268,7 @@ def searchStock():
       return redirect("/")
    
    query=request.args.get("query").strip().upper()
+   query=(query)
    stock=yfinance.Ticker(query)
 
    username=session.get("name")
@@ -220,8 +279,8 @@ def searchStock():
 
    balance=user["money"]
 
-   stockInformation=stock.get_info()
    try:
+      stockInformation=stock.get_info()
       previousClose=stockInformation["regularMarketPreviousClose"]
       currentPrice=stockInformation["currentPrice"]
    except:

@@ -1,70 +1,80 @@
 <DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.8">
-      <meta http-equiv="X-UA-Compatible" content="ie-edge">
-      <meta http-equiv="refresh" content="120">
-      <link href="style.css" rel="stylesheet" type="text/css" />
-      <link rel="icon" href="https://i.ibb.co/0GKc5Qg/stockicon.png">
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-      <title>Sarveshwar Stock Simulator</title>
-    </head>
-    <body style="background-color: #18191a;">
-      <form  action="/logout" method="GET" style="width: 100%; height: 8%;">  
-        <div class="form-group" style="width: 100%;">
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.8">
+    <meta http-equiv="X-UA-Compatible" content="ie-edge">
+    <meta http-equiv="refresh" content="120">
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="https://i.ibb.co/0GKc5Qg/stockicon.png">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <title>Sarveshwar Stock Simulator</title>
+  </head>
+  <body style="background-color: #18191a;">
+    <form  action="/logout" method="GET" style="width: 100%; height: 8%;">  
+      <div class="form-group" style="width: 100%;">
 
-          <button type="submit" class="btn btn-danger form-control" style="width: 8%; margin-top: 2%; height: 100%; margin-right: 4%; font-size: 1.5vw; float: right; margin-bottom: 1%; ">Log Out</button>
+        <button type="submit" class="btn btn-danger form-control" style="width: 8%; margin-top: 2%; height: 100%; margin-right: 4%; font-size: 1.5vw; float: right; margin-bottom: 1%; ">Log Out</button>
 
-        </div>
-      </form>
-      <br>
-        <div style="width: 100%; height: 35%;"><img style="width: 30%; height: 100%; margin-left: 10%; float:left; " src="https://i.ibb.co/0GKc5Qg/stockicon.png"><b style="width: 40%; height: 100%; margin-right: 9%; float:right; font-size: 2.5vw; color: white;">
-            <div style="color: white; font-size: 2.75vw; text-align: center; margin-bottom: 4%; margin-top: 5%;">Welcome to <br><b style="color: #316cb8;">Sarveshwar's Stock Simulator</b> </div></b></div>
+      </div>
+    </form>
+    <br>
+      <div style="width: 100%; height: 35%;"><img style="width: 30%; height: 100%; margin-left: 10%; float:left; " src="https://i.ibb.co/0GKc5Qg/stockicon.png"><b style="width: 40%; height: 100%; margin-right: 9%; float:right; font-size: 2.5vw; color: white;">
+          <div style="color: white; font-size: 2.75vw; text-align: center; margin-bottom: 4%; margin-top: 5%;">Welcome to <br><b style="color: #316cb8;">Sarveshwar's Stock Simulator</b> </div></b></div>
 
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-            <form  action="/search" method="GET">  
-              <div class="form-group" style="width: 90%; margin-left: 5%; margin-top: 3%;">
-                <input required placeholder="🔎 Enter Stock Symbol (Ex: MSFT)" type="text"  name="query" id="query" class="form-control" style="height:10%; font-size: 2vw; width: 100%l">
-                </div>
+          <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+          <form  action="/search" method="GET">  
+            <div class="form-group" style="width: 90%; margin-left: 5%; margin-top: 3%;">
+              <input required placeholder="🔎 Enter Stock Symbol (Ex: MSFT)" type="text"  name="query" id="query" class="form-control" style="height:10%; font-size: 2vw; width: 100%l">
+              </div>
+          </form>
+          <div style="width: 86%; float: left; margin-left: 7%; margin-right: 7%; font-size: 3vw; color: white; margin-top: 3%; margin-bottom: 3%;">
+
+            <h1 style="font-weight: 650; color: white;">Balance: {{balance}} </h1>
+
+            {% if valueDifference >= 0 %}
+            <h1 style="font-weight: 650; color: #04b73c;">Value: {{value}} (+{{"{:.2f}%".format(valueDifference)}})</h1>
+            {% else %}
+            <h1 style="font-weight: 650; color: #DC143C;">Value: {{value}} ({{"{:.2f}%".format(valueDifference)}})</h1>
+            {% endif %}
+
+            {% if stocksOwned.keys()|length > 0 %}
+            <h1 style="font-weight: 500; color: #778899; font-size: 3vw; margin-top: 6%;">Currently Owned Stocks: </h1>
+            {% endif %}
+
+            {% for stock in stocksOwned.keys() %}
+            <a href="/search?query={{stock}}" style="font-weight: 650; color: #316cb8; text-decoration: none;;">{{stock}} <smaller style="font-size: 2vw; color: #778899">({{stocksOwned[stock]}})</smaller></a>
+            <br>
+            {% endfor %}
+
+            <form  action="/setpoint" method="GET" style="margin-top: 5%; margin-bottom: 5%;">  
+              <div class="form-group">
+
+                <button style="width: 49%; font-size: 2vw; height: 8%; float: left;" type="submit" class="btn btn-warning form-control">Set Reference Point</button>
+
+              </div>
             </form>
-            <div style="width: 86%; float: left; margin-left: 7%; margin-right: 7%; font-size: 3vw; color: white; margin-top: 3%; margin-bottom: 3%;">
+            <form  action="/viewtransactions" method="GET" style="margin-top: 5%;">  
+              <div class="form-group">
 
-              <h1 style="font-weight: 650; color: white;">Balance: {{balance}} </h1>
+                <button style="width: 49%; font-size: 2vw; height: 8%; float: right;" type="submit" class="btn btn-success form-control">View Transactions</button>
 
-              {% if valueDifference >= 0 %}
-              <h1 style="font-weight: 650; color: #04b73c;">Value: {{value}} (+{{"{:.2f}%".format(valueDifference)}})</h1>
-              {% else %}
-              <h1 style="font-weight: 650; color: #DC143C;">Value: {{value}} ({{"{:.2f}%".format(valueDifference)}})</h1>
-              {% endif %}
+              </div>
+            </form>
+       
+        </div>
+         <br>
+         {% for sentence in sentences %}
+          <div style="color: white; font-size: 1vw; margin-left: 10%; margin-right: 10%; font-weight: 500; margin-top: 5%;">{{sentence}}</div>
+          {% endfor %}
+         <form  action="/chat" method="POST" style="margin-top: 2%; width: 86%; margin-left: 7%; margin-right: 7%; margin-bottom: 5%;">  
+          <div class="form-group">
+            <textarea required placeholder="Ask AI for Input regarding Stocks (Ex: What is the Stock Ticker for Microsoft?)"  type="description"  name="message" id="message" class="form-control" style="height:30%; font-size: 2vw; width: 100%; "></textarea>
+            <button style=" font-size: 2vw; height: 8%; float: right;" type="submit" class="btn btn-primary form-control">Talk to Gemini</button>
 
-              {% if stocksOwned.keys()|length > 0 %}
-              <h1 style="font-weight: 500; color: #778899; font-size: 3vw; margin-top: 6%;">Currently Owned Stocks: </h1>
-              {% endif %}
-
-              {% for stock in stocksOwned.keys() %}
-              <a href="/search?query={{stock}}" style="font-weight: 650; color: #316cb8; text-decoration: none;;">{{stock}} <smaller style="font-size: 2vw; color: #778899">({{stocksOwned[stock]}})</smaller></a>
-              <br>
-              {% endfor %}
- 
-              <form  action="/setpoint" method="GET" style="margin-top: 5%; margin-bottom: 5%;">  
-                <div class="form-group">
-  
-                  <button style="width: 49%; font-size: 2vw; height: 8%; float: left;" type="submit" class="btn btn-warning form-control">Set Reference Point</button>
-  
-                </div>
-              </form>
-              <form  action="/viewtransactions" method="GET" style="margin-top: 5%;">  
-                <div class="form-group">
-  
-                  <button style="width: 49%; font-size: 2vw; height: 8%; float: right;" type="submit" class="btn btn-success form-control">View Transactions</button>
-  
-                </div>
-              </form>
-         
           </div>
-           <br>
-        <br>
-        <br>
-    </body>
-    </html>
+        </form>
+      <br>
+      <br>
+  </body>
+  </html>
