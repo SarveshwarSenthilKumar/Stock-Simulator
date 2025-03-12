@@ -55,15 +55,6 @@
         </div>
         <br>
         <br>
-
-        <form  action="/chat" method="POST">  
-          <div class="form-group">
-
-            <button type="submit" name="message" value="Should I invest in {{ stockInfo.symbol }}" class="btn btn-primary form-control" style="width: 90%; margin-top: 2%; margin-bottom: 2%; height: 10%; margin-left: 5%; font-size: 2vw; float: left; ">Ask AI if you should invest</button>
-
-          </div>
-        </form>
-
         {% if stockInfo.max > 0 %}
         <form  action="/purchasestock" method="GET" style="margin-top: 3%;">  
               <div class="form-group" style="width: 90%; margin-left: 5%;">
