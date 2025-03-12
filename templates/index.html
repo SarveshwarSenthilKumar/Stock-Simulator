@@ -64,6 +64,16 @@
          
           </div>
            <br>
+           {% for sentence in sentences %}
+            <div style="color: white; font-size: 1vw; margin-left: 10%; margin-right: 10%; font-weight: 500; margin-top: 5%;">{{sentence}}</div>
+            {% endfor %}
+           <form  action="/chat" method="POST" style="margin-top: 2%; width: 86%; margin-left: 7%; margin-right: 7%; margin-bottom: 5%;">  
+            <div class="form-group">
+              <textarea required placeholder="Ask AI for Input regarding Stocks (Ex: What is the Stock Ticker for Microsoft?)"  type="description"  name="message" id="message" class="form-control" style="height:30%; font-size: 2vw; width: 100%; "></textarea>
+              <button style=" font-size: 2vw; height: 8%; float: right;" type="submit" class="btn btn-primary form-control">Talk to Gemini</button>
+
+            </div>
+          </form>
         <br>
         <br>
     </body>
